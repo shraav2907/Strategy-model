@@ -4,7 +4,7 @@ A machine learning pipeline for predicting Formula One lap times and optimising 
 
 ## Project Structure
 ```
-f1-strategy/
+src/
 │
 ├── data_loader.py            # OpenF1 API ingestion, lap-weather temporal merge
 ├── dataset.py                # Multi-year session discovery and download
