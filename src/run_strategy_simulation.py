@@ -1,7 +1,7 @@
-import joblib
+from joblib import load
 from strategy import find_best_strategy_monte_carlo
 
-model = joblib.load("results\multirace_model_20260315_151919.pkl")
+model = load("results\multirace_model_20260315_151919.pkl")
 base_state = {
     "rain_intensity": 0.1,
     "track_temp": 30,

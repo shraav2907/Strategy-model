@@ -1,5 +1,7 @@
 import itertools
 import numpy as np
+from joblib import Parallel, delayed
+from joblib import parallel_backend
 
 from simulation import simulate_strategy
 from monte_carlo import sample_weather_trajectory
@@ -29,6 +31,25 @@ def generate_two_stop_strategies(total_laps, compounds, min_gap=5):
                     )
 
     return strategies
+
+def evaluate_one_strategy(
+    model,
+    base_state,
+    total_laps,
+    strategy,
+    lambda_risk,
+    n_simulations
+):
+    stats = evaluate_strategy_monte_carlo(
+        model,
+        base_state,
+        total_laps,
+        strategy,
+        n_simulations,
+    )
+    
+    objective = stats["mean_time"] + lambda_risk * stats["std_time"]
+    return objective
 
 
 def evaluate_strategy_monte_carlo(
@@ -75,29 +96,22 @@ def find_best_strategy_monte_carlo(
     total_laps,
     compounds,
     lambda_risk=0.1,
+    n_simulations=5,
+    n_jobs=-1
 ):
 
     strategies = generate_two_stop_strategies(total_laps, compounds)
+    
+    print(f"Evaluating {len(strategies)} strategies across {n_jobs} cores...")
 
-    best_objective = float("inf")
-    best_strategy = None
-
-    for i, strategy in enumerate(strategies):
-        print(f"Evaluating strategy {i+1}/{len(strategies)}")
-        
-        stats = evaluate_strategy_monte_carlo(
-            model,
-            base_state,
-            total_laps,
-            strategy,
-            n_simulations=5,
+    with parallel_backend('threading', n_jobs=n_jobs):
+        objectives = Parallel(verbose=1)(
+            delayed(evaluate_strategy_monte_carlo)(
+                model, base_state, total_laps, strategy, lambda_risk, n_simulations
+            )
+            for strategy in strategies
         )
-
-        objective = stats["mean_time"] + lambda_risk * stats["std_time"]
-
-        if objective < best_objective:
-
-            best_objective = objective
-            best_strategy = strategy
-
-    return best_strategy, best_objective
+    
+    best_idx = int(np.argmin(objectives))
+    
+    return strategies[best_idx], objectives[best_idx]

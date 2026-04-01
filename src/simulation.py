@@ -53,7 +53,7 @@ def simulate_strategy(
         features = pd.DataFrame([state])
         features = features.reindex(columns=feature_columns, fill_value=0)
         features = features[model.feature_names_in_]
-        lap_time = model.predict(features)[0]
+        lap_time = model.predict(features)[0] #parallelise this prediction step if possible
         total_time += lap_time
         tire_age += 1
         if lap % log_every_n_laps == 0 or lap in pit_laps:
