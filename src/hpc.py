@@ -60,7 +60,7 @@ def run_mpi_strategy_search(
     
 if __name__ == "__main__":
     base_state = {
-        "rain_intensity": 0.2,
+        "rain_intensity": 0.1,
         "track_temperature": 30,
         "air_temp": 25,
         "tire_age": 0,
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     }
     
     run_mpi_strategy_search(
-        model_path="results/multirace_model.pkl",
+        model_path="results/multirace_model_20260408_103555.pkl",
         base_state=base_state,
         total_laps=58,
         compounds=[0, 1, 2],

@@ -40,7 +40,6 @@ def load_race(session_key):
     stints = fetch_stints(session_key)
     time.sleep(1)
 
-    laps = laps[laps["driver_number"] == 1]
     laps = laps[laps["lap_duration"].notna()]
     laps = laps[laps["lap_duration"] > 40]
     laps = laps[laps["lap_duration"] < 200]
@@ -80,8 +79,8 @@ def load_race(session_key):
     weather = weather.dropna(subset=["date"])
     
     laps["compound_code"] = laps["Compound"].map(compound_map)
-    laps["date_start"] = pd.to_datetime(laps["date_start"])
-    weather["date"] = pd.to_datetime(weather["date"])
+    laps["date_start"] = pd.to_datetime(laps["date_start"], format='ISO8601')
+    weather["date"] = pd.to_datetime(weather["date"], format='ISO8601')
     
     data = pd.merge_asof(
         laps.sort_values("date_start"),

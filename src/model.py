@@ -17,9 +17,12 @@ def train_model(df, features, model_path=None):
     y_test = y.iloc[split:]
 
     model = RandomForestRegressor(
-        n_estimators=300,
+        n_estimators=50,
+        max_depth=6,
+        min_samples_leaf=10,
+        max_features=0.5,
         random_state=42,
-        n_jobs=-1
+        n_jobs=1
     )
 
     model.fit(X_train, y_train)
