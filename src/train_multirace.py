@@ -72,7 +72,7 @@ print(f"Laps with rain: {len(wet_laps)} out of {len(df)}")
 print(f"Wet Compound laps: {len(df[df['compound_code'] >=3])}")
 print(df["LapTime"].describe())
 
-test_session = 7953
+test_session = 7787 #Australia
 
 train_df = df[df["session_key"] != test_session]
 test_df = df[df["session_key"] == test_session]
